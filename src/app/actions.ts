@@ -1,4 +1,5 @@
-"use server";
+// Runs in the browser: the site is a static export, so there is no server to run a server action.
+// `useActionState` in ContactForm calls this directly when the form is submitted.
 
 import { site } from "@/lib/site";
 
@@ -32,9 +33,10 @@ export async function sendContact(_prev: ContactState, formData: FormData): Prom
     return { status: "error", message: "Please check the highlighted fields.", errors, values };
   }
 
-  // Set CONTACT_FORM_ENDPOINT (e.g. a Formspree form URL) to deliver submissions.
-  // Until then, visitors are pointed to email and phone instead.
-  const endpoint = process.env.CONTACT_FORM_ENDPOINT;
+  // Set NEXT_PUBLIC_CONTACT_FORM_ENDPOINT (e.g. a Formspree form URL) when building to deliver
+  // submissions. It is baked into the page at build time, so rebuild after changing it.
+  // Until it is set, visitors are pointed to email and phone instead.
+  const endpoint = process.env.NEXT_PUBLIC_CONTACT_FORM_ENDPOINT;
   if (!endpoint) {
     return {
       status: "error",
